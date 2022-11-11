@@ -13,6 +13,14 @@ public class Input {
         }
     }
 
+    public static String inPassword(){
+        while (true){
+            String str = scanner.nextLine().trim();
+            if(str.matches("\\w+")) return str;
+            else System.out.println("Несоответствует требованиям");
+        }
+    }
+
     public static double inDoubleGreaterThanZeroWithTwoNumbersAfterTheDot(){
         while (true) {
             String inputText = scanner.nextLine();

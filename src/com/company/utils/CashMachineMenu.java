@@ -13,8 +13,9 @@ public class CashMachineMenu {
         }
 
         for (int i = 1; i < 4; i++) {
-            System.out.print("Введите пароль(попытка " + i + "/3): ");
-            String password = Input.inNotNullStr();
+            System.out.print("Введите пароль(может содержать только английские буквы, цифры, знак '_')" +
+                    "\nПопытка " + i + "/3: ");
+            String password = Input.inPassword();
             if (cashMachine.insertCard(cardNumber, password)) {
                 System.out.println("Пароль верен");
                 return true;
@@ -29,8 +30,9 @@ public class CashMachineMenu {
     }
 
     private static void cardRegistration(String cardNumber) {
-        System.out.print("Карта впервые активирована, придумайте пароль: ");
-        String password = Input.inNotNullStr();
+        System.out.print("Карта впервые активирована, придумайте пароль (может содержать только английские " +
+                "буквы, цифры, знак '_'): ");
+        String password = Input.inPassword();
         cashMachine.registerAndInsert(cardNumber, password);
     }
 
