@@ -1,5 +1,6 @@
 package com.company.utils;
 
+import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class Input {
@@ -21,13 +22,14 @@ public class Input {
         }
     }
 
-    public static double inDoubleGreaterThanZeroWithTwoNumbersAfterTheDot(){
+    public static BigDecimal inAmountOfFunds(){
         while (true) {
             String inputText = scanner.nextLine();
             try {
-                double d = Double.parseDouble(inputText);
-                if(d > 0 && String.valueOf(d).split("\\.")[1].length() <= 2) return d;
+                BigDecimal d = new BigDecimal(inputText);
+                if(d.compareTo(BigDecimal.valueOf(0)) > 0 && d.scale() <= 2) return d;
             }catch (Exception e){
+                System.out.println("Введено не число");
             }
             System.out.println("Введите положительное число с двумя знаками после точки");
         }

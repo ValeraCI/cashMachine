@@ -1,64 +1,68 @@
 package com.company.entity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 public class Bank {
-    private Map<Card, Double> informationAboutCards = new HashMap<>();
+    private Map<Card, BigDecimal> cardsInformation;
     private static Bank bank;
 
-    private Bank(){}
+    private Bank(){
+        cardsInformation = new HashMap<>();
+    }
 
-    public static Bank getEntity(){
+    public static Bank getInstance(){
         if(bank == null) bank = new Bank();
         return bank;
     }
 
-    public boolean cardIsRegistered(String number){
-        List<Card> cardList = new ArrayList<>(informationAboutCards.keySet());
-        for (Card card: cardList) {
-            if(card.getNumber().equals(number)) return true;
-        }
-        return false;
+    public Boolean cardIsRegistered(String number){
+        Optional<Card> card = new ArrayList<>(cardsInformation.keySet())
+                .stream()
+                .filter(c -> c.getNumber().equals(number))
+                .findFirst();
+
+        return card.isPresent();
     }
 
-    public Card getCard(String number){
-        List<Card> cardList = new ArrayList<>(informationAboutCards.keySet());
-        for (Card card: cardList) {
-            if(card.getNumber().equals(number)) return card;
-        }
-        return null;
+    public Card getCard(String number) {
+        Optional<Card> card = new ArrayList<>(cardsInformation.keySet())
+                .stream()
+                .filter(c -> c.getNumber().equals(number))
+                .findFirst();
+
+        if(card.isPresent()) return card.get();
+        else throw new NullPointerException("Карта не найдена");
     }
 
-    public double getCardBalance(Card card){
-        return informationAboutCards.get(card);
+    public BigDecimal getCardBalance(Card card){
+        return cardsInformation.get(card);
     }
 
-    public boolean addNewCard(Card card){
-        if(informationAboutCards.containsKey(card)) return false;
-        informationAboutCards.put(card, 0d);
+    public Boolean addCard(Card card){
+        if(cardsInformation.containsKey(card)) return false;
+        cardsInformation.put(card, new BigDecimal(0));
         return true;
     }
 
-    public boolean writeOffFunds(Card card, double count){
-        double cardBalance = informationAboutCards.get(card);
-        if(cardBalance < count) return false;
-        informationAboutCards.put(card, Math.round((cardBalance-count)*100)/100d);
+    public Boolean writeOffFunds(Card card, BigDecimal count){
+        BigDecimal cardBalance = cardsInformation.get(card);
+
+        if(cardBalance.compareTo(count) < 0) return false;
+        cardsInformation.put(card, cardBalance.subtract(count));
         return true;
     }
 
-    public void accrueFunds(Card card, double count){
-        double cardBalance = informationAboutCards.get(card);
-        informationAboutCards.put(card, Math.round((cardBalance+count)*100)/100d);
+    public void accrueFunds(Card card, BigDecimal count){
+        BigDecimal cardBalance = cardsInformation.get(card);
+        cardsInformation.put(card, cardBalance.add(count));
     }
 
-    public Map<Card, Double> getInformationAboutCards() {
-        return informationAboutCards;
+    public Map<Card, BigDecimal> getCardsInformation() {
+        return cardsInformation;
     }
 
-    public void setInformationAboutCards(Map<Card, Double> informationAboutCards) {
-        this.informationAboutCards = informationAboutCards;
+    public void setCardsInformation(Map<Card, BigDecimal> cardsInformation) {
+        this.cardsInformation = cardsInformation;
     }
 }

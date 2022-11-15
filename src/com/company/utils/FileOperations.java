@@ -13,8 +13,6 @@ public class FileOperations {
             while ((str = bf.readLine()) != null){
                 text.add(str);
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

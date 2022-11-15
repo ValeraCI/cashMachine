@@ -2,11 +2,13 @@ package com.company.utils;
 
 import com.company.entity.CashMachine;
 
+import java.math.BigDecimal;
+
 public class CashMachineMenu {
 
-    private static CashMachine cashMachine = new CashMachine();
+    private static final CashMachine cashMachine = new CashMachine();
 
-    private static boolean cardConfirmation(String cardNumber) {
+    private static Boolean cardConfirmation(String cardNumber){
         if (CardValidator.cardIsBlock(cardNumber)) {
             System.out.println("Карта заблокирована");
             return false;
@@ -41,8 +43,9 @@ public class CashMachineMenu {
 
         while (work){
             String cardNumber = Input.inputCardNumber();
-            if(CardValidator.cardIsRegistered(cardNumber))
-                work = !cardConfirmation(cardNumber);
+            if(CardValidator.cardIsRegistered(cardNumber)) {
+                    work = !cardConfirmation(cardNumber);
+            }
             else {
                 cardRegistration(cardNumber);
                 work = false;
@@ -51,18 +54,18 @@ public class CashMachineMenu {
         }
     }
 
-    public static void topUpCard(){
+    private static void topUpCard(){
         System.out.print("Сумма пополнения(не более 1000000): ");
-        double count = Input.inDoubleGreaterThanZeroWithTwoNumbersAfterTheDot();
+        BigDecimal count = Input.inAmountOfFunds();
         if(cashMachine.depositFunds(count))
             System.out.println("Операция произведена успешно");
         else System.out.println("Превышение придела пополнения, внесите сумму не более 1000000");
     }
 
-    public static void removeFromCard() {
+    private static void removeFromCard() {
         System.out.print("Сумма снятия: ");
-        double count = Input.inDoubleGreaterThanZeroWithTwoNumbersAfterTheDot();
-        if(cashMachine.getAmountOfFunds() < count) System.out.println("В банкомате недостаточно средств");
+        BigDecimal count = Input.inAmountOfFunds();
+        if(cashMachine.getAmountOfFunds().compareTo(count) < 0) System.out.println("В банкомате недостаточно средств");
         else if(!cashMachine.withdrawFunds(count)) System.out.println("На счету недостаточно средств");
         else System.out.println("Операция произведена успешно");
     }
@@ -72,11 +75,13 @@ public class CashMachineMenu {
         while (work){
             System.out.println("Работа с картой №" + cashMachine.getCardNumber() + "\n");
 
-            System.out.println("Выберите действие:\n" +
-                    "1.Просмотреть баланс карты\n" +
-                    "2.Пополнить баланс\n" +
-                    "3.Снять деньги с баланса\n\n" +
-                    "0.Извлечь карту");
+            System.out.println("""
+                    Выберите действие:
+                    1.Просмотреть баланс карты
+                    2.Пополнить баланс
+                    3.Снять деньги с баланса
+
+                    0.Извлечь карту""");
 
             System.out.println("Действие номер: ");
             switch (Input.inNotNullStr()){

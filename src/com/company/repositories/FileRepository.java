@@ -5,6 +5,7 @@ import com.company.utils.FileOperations;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,7 @@ import java.util.Map;
 public class FileRepository {
     private static File file;
 
-    private static List<String> text;
+    private static final List<String> text;
 
     static {
         String rootFolder = System.getProperty("user.dir");
@@ -27,30 +28,26 @@ public class FileRepository {
     }
 
 
-    public static double getCashMachineAmountOfFunds(){
-        final double defaultValue = 5000;
-        if(text.size() == 0) return defaultValue;
+    public static BigDecimal getCashMachineAmountOfFunds(){
+        final String defaultValue = "5000";
+        if(text.size() == 0) return new BigDecimal(defaultValue);
         String firstLine = text.get(0);
         if(firstLine.matches("^\\d+(.\\d+)?$"))
-            return Double.parseDouble(text.get(0));
+            return new BigDecimal(text.get(0));
 
-        else return defaultValue;
+        else return new BigDecimal(defaultValue);
     }
 
-    public static Map<Card, Double> getCards(){
-        Map<Card, Double> cards = new HashMap<>();
+    public static Map<Card, BigDecimal> getCards(){
+        Map<Card, BigDecimal> cards = new HashMap<>();
 
-        for(int i = 1; i < text.size(); i++){
-            if(!text.get(i).trim().matches("^\\d{4}-\\d{4}-\\d{4}-\\d{4} \\w+( (\\d+))? \\d+(.\\d+)?"))
+        for(int i = 1; i < text.size(); i++) {
+            if (!text.get(i).trim().matches("^\\d{4}-\\d{4}-\\d{4}-\\d{4} \\w+ -?\\d+ \\d+(.\\d+)?"))
                 continue;
 
             String[] elementOfLine = text.get(i).trim().split(" ");
-            if(elementOfLine.length == 4) {
-                cards.put(new Card(elementOfLine[0], elementOfLine[1], Long.parseLong(elementOfLine[2])),
-                        Double.parseDouble(elementOfLine[3]));
-            }
-            else cards.put(new Card(elementOfLine[0], elementOfLine[1]),
-                    Double.parseDouble(elementOfLine[2]));
+            cards.put(new Card(elementOfLine[0], elementOfLine[1], Long.parseLong(elementOfLine[2])),
+                    new BigDecimal(elementOfLine[3]));
         }
         return cards;
     }

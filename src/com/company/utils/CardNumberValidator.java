@@ -4,11 +4,11 @@ public class CardNumberValidator {
 
     private final static String regex = "^\\d{4}-\\d{4}-\\d{4}-\\d{4}$";
 
-    public static boolean check(String cardNumber){
+    public static Boolean check(String cardNumber){
         return cardNumber.matches(regex);
     }
 
-    public static boolean isValidLuhn(String cardNumber){
+    public static Boolean isValidLuhn(String cardNumber){
         cardNumber = cardNumber.replaceAll("-", "");
         int sum = 0;
         for(int i = 0; i < cardNumber.length(); i++){

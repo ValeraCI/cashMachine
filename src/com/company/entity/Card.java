@@ -10,6 +10,7 @@ public class Card{
     public Card(String number, String password) {
         this.number = number;
         this.password = password;
+        startTimeOfBlocking = -1L;
     }
 
     public Card(String number, String password, long startTimeOfBlocking) {
@@ -22,16 +23,15 @@ public class Card{
         startTimeOfBlocking = System.currentTimeMillis();
     }
 
-    public boolean isBlock(){
-        if(startTimeOfBlocking == null) return false;
-        else if(System.currentTimeMillis() - startTimeOfBlocking >= 1000*60*60*24) {
-            startTimeOfBlocking = null;
+    public Boolean isBlocked(){
+        if(System.currentTimeMillis() - startTimeOfBlocking >= 1000*60*60*24) {
+            startTimeOfBlocking = -1L;
             return false;
         }
         return true;
     }
 
-    public boolean checkPassword(String password){
+    public Boolean checkPassword(String password){
         return this.password.equals(password);
     }
 
@@ -42,8 +42,7 @@ public class Card{
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Card)) return false;
-        Card card = (Card) o;
+        if (!(o instanceof Card card)) return false;
         return number.equals(card.number);
     }
 
