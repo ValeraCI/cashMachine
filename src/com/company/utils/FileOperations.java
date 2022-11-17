@@ -16,7 +16,6 @@ public class FileOperations {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return text;
     }
 

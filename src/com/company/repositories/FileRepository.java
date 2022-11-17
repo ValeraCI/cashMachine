@@ -1,14 +1,15 @@
 package com.company.repositories;
 
-import com.company.entity.Card;
+import com.company.entity.Cards.Card;
+import com.company.utils.CardFactory;
+import com.company.utils.CardType;
 import com.company.utils.FileOperations;
 
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class FileRepository {
     private static File file;
@@ -35,19 +36,22 @@ public class FileRepository {
         if(firstLine.matches("^\\d+(.\\d+)?$"))
             return new BigDecimal(text.get(0));
 
-        else return new BigDecimal(defaultValue);
+        return new BigDecimal(defaultValue);
     }
 
-    public static Map<Card, BigDecimal> getCards(){
-        Map<Card, BigDecimal> cards = new HashMap<>();
+    public static List<Card> getCards(){
+        List<Card> cards = new ArrayList<>();
 
         for(int i = 1; i < text.size(); i++) {
-            if (!text.get(i).trim().matches("^\\d{4}-\\d{4}-\\d{4}-\\d{4} \\w+ -?\\d+ \\d+(.\\d+)?"))
+            String line = text.get(i).trim();
+            if (!line.matches("^\\d{4}-\\d{4}-\\d{4}-\\d{4} \\w+ -?\\d+ \\d+(.\\d+)? (BRONZE|GOLDEN|SILVERED)"))
                 continue;
 
-            String[] elementOfLine = text.get(i).trim().split(" ");
-            cards.put(new Card(elementOfLine[0], elementOfLine[1], Long.parseLong(elementOfLine[2])),
-                    new BigDecimal(elementOfLine[3]));
+            String[] elementOfLine = line.split(" ");
+            Card card = CardFactory.create(elementOfLine[0], elementOfLine[1], CardType.valueOf(elementOfLine[4]));
+            card.setBlockingTime(Long.parseLong(elementOfLine[2]));
+            card.setFunds(new BigDecimal(elementOfLine[3]));
+            cards.add(card);
         }
         return cards;
     }

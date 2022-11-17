@@ -16,8 +16,10 @@ public class Input {
 
     public static String inPassword(){
         while (true){
+            System.out.print("Ввод пароля(содержат только английские буквы, цифры, знак '_'." +
+                            " Длина пароля от 4 символов): ");
             String str = scanner.nextLine().trim();
-            if(str.matches("\\w+")) return str;
+            if(str.matches("\\w{4,}")) return str;
             else System.out.println("Несоответствует требованиям");
         }
     }
@@ -48,6 +50,25 @@ public class Input {
                 continue;
             }
             return cardNumber;
+        }
+    }
+
+    public static CardType inputCardType(){
+        while (true){
+            System.out.print("""
+                    Выберите тип карты:
+                    1. Золотая(нулевой процент при пополнении и снятии средств)
+                    2. Серебренная(при пополнении и снятии накладывается три процента штрафа)
+                    3. Бронзовая(при пополнении и снятии накладывается пять процентов штрафа)
+                    
+                    Ваш выбор:\s""");
+
+            switch (scanner.nextLine()){
+                case "1" -> { return CardType.GOLDEN; }
+                case "2" -> { return CardType.SILVERED; }
+                case "3" -> {return CardType.BRONZE; }
+                default -> System.out.println("Неверный ввод");
+            }
         }
     }
 }

@@ -1,12 +1,11 @@
 package com.company.services;
 
 import com.company.repositories.FileRepository;
-import com.company.entity.Card;
+import com.company.entity.Cards.Card;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class FileService {
 
@@ -14,15 +13,15 @@ public class FileService {
         return FileRepository.getCashMachineAmountOfFunds();
     }
 
-    public static Map<Card, BigDecimal> getCards(){
+    public static List<Card> getCards(){
         return FileRepository.getCards();
     }
 
-    public static void writeToFile(BigDecimal cashMachineAmountOfFunds, Map<Card, BigDecimal> cards){
+    public static void writeToFile(BigDecimal cashMachineAmountOfFunds, List<Card> cards){
         List<String> text = new ArrayList<>();
         text.add(String.valueOf(cashMachineAmountOfFunds));
-        for (Map.Entry<Card, BigDecimal> card : cards.entrySet()) {
-                text.add(card.getKey() + " " + card.getValue());
+        for (Card card : cards) {
+                text.add(card.toString());
         }
         FileRepository.writeToFile(text);
     }

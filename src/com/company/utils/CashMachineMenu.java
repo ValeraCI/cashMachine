@@ -1,112 +1,138 @@
 package com.company.utils;
 
+import com.company.entity.Bank;
+import com.company.entity.Cards.Card;
 import com.company.entity.CashMachine;
+import com.company.services.FileService;
 
 import java.math.BigDecimal;
 
 public class CashMachineMenu {
 
     private static final CashMachine cashMachine = new CashMachine();
+    private static final Bank bank = new Bank();
 
-    private static Boolean cardConfirmation(String cardNumber){
-        if (CardValidator.cardIsBlock(cardNumber)) {
+    private static void saveData(){
+        FileService.writeToFile(cashMachine.getAmountOfFunds(), bank.getRegisteredCards());
+    }
+
+    private static Boolean cardConfirmation(Card card){
+        if (card.isBlocked()) {
             System.out.println("Карта заблокирована");
             return false;
         }
 
         for (int i = 1; i < 4; i++) {
-            System.out.print("Введите пароль(может содержать только английские буквы, цифры, знак '_')" +
-                    "\nПопытка " + i + "/3: ");
+            System.out.print("Попытка " + i + "/3: ");
             String password = Input.inPassword();
-            if (cashMachine.insertCard(cardNumber, password)) {
+            if (card.checkPassword(password)) {
                 System.out.println("Пароль верен");
                 return true;
             }
             System.out.println("Пароль неверен");
         }
 
-        cashMachine.blockCard(cardNumber);
+        card.block();
         System.out.println("Карта заблокирована. Повторите попытку через сутки");
+        saveData();
 
         return false;
     }
 
-    private static void cardRegistration(String cardNumber) {
-        System.out.print("Карта впервые активирована, придумайте пароль (может содержать только английские " +
-                "буквы, цифры, знак '_'): ");
+    private static Card cardRegistration(String cardNumber) {
+        System.out.println("Карта впервые активирована. Придумайте пароль");
         String password = Input.inPassword();
-        cashMachine.registerAndInsert(cardNumber, password);
+        CardType cardType = Input.inputCardType();
+
+        Card card = CardFactory.create(cardNumber, password, cardType);
+        bank.addCard(card);
+        return card;
     }
 
-    private static void insertCardMenu(){
-        boolean work = true;
-
-        while (work){
+    private static Card insertCardMenu(){
+        Card card;
+        while (true){
             String cardNumber = Input.inputCardNumber();
-            if(CardValidator.cardIsRegistered(cardNumber)) {
-                    work = !cardConfirmation(cardNumber);
+            if(bank.cardIsRegistered(cardNumber)) {
+                    card = bank.getCard(cardNumber);
+                    if(cardConfirmation(card)){
+                        cashMachine.setContainsCard(true);
+                        return card;
+                    }
             }
             else {
-                cardRegistration(cardNumber);
-                work = false;
+                cashMachine.setContainsCard(true);
+                card = cardRegistration(cardNumber);
+                saveData();
+                return card;
             }
-            cashMachine.save();
         }
     }
 
-    private static void topUpCard(){
+    private static void topUpCard(Card card){
         System.out.print("Сумма пополнения(не более 1000000): ");
         BigDecimal count = Input.inAmountOfFunds();
-        if(cashMachine.depositFunds(count))
+        if(count.compareTo(BigDecimal.valueOf(1_000_000)) <= 0) {
+            cashMachine.depositFunds(count);
+            card.depositFunds(count);
             System.out.println("Операция произведена успешно");
+        }
         else System.out.println("Превышение придела пополнения, внесите сумму не более 1000000");
     }
 
-    private static void removeFromCard() {
+    private static void removeFromCard(Card card) {
         System.out.print("Сумма снятия: ");
         BigDecimal count = Input.inAmountOfFunds();
-        if(cashMachine.getAmountOfFunds().compareTo(count) < 0) System.out.println("В банкомате недостаточно средств");
-        else if(!cashMachine.withdrawFunds(count)) System.out.println("На счету недостаточно средств");
-        else System.out.println("Операция произведена успешно");
+        if(cashMachine.getAmountOfFunds().compareTo(card.subtractPercentage(count)) < 0) {
+            System.out.println("В банкомате недостаточно средств");
+        } else if (!card.possibleWriteOffFunds(count)) {
+            System.out.println("На счету недостаточно средств");
+        } else {
+            BigDecimal cash = card.writeOffFunds(count);
+            cashMachine.withdrawFunds(cash);
+            System.out.println("Операция выполнена успешна. Выдано: " + cash);
+        }
     }
 
-    private static void cardOperationsMenu(){
+    private static void cardOperationsMenu(Card card){
         boolean work = true;
         while (work){
-            System.out.println("Работа с картой №" + cashMachine.getCardNumber() + "\n");
+            System.out.println("Работа с картой №" + card.getNumber() + "(" + card.getType() + ")\n" );
 
-            System.out.println("""
+            System.out.print("""
                     Выберите действие:
                     1.Просмотреть баланс карты
                     2.Пополнить баланс
                     3.Снять деньги с баланса
 
-                    0.Извлечь карту""");
+                    0.Извлечь карту
+                    Действие номер:\s""");
 
-            System.out.println("Действие номер: ");
             switch (Input.inNotNullStr()){
-                case "1" -> System.out.println("Баланс: " + cashMachine.getCardBalance());
-                case "2" -> topUpCard();
-                case "3" ->removeFromCard();
+                case "1" -> System.out.println("Баланс: " + card.getFunds());
+                case "2" -> topUpCard(card);
+                case "3" ->removeFromCard(card);
 
                 case "0" -> {
-                    cashMachine.extractCard();
+                    cashMachine.setContainsCard(false);
                     work = false;
                 }
                 default -> System.out.println("Повторите выбор действия");
             }
             System.out.println();
-            cashMachine.save();
+            saveData();
         }
     }
 
     public static void start(){
+        Card card = null;
+        bank.setRegisteredCards(FileService.getCards());
         while (true){
             if(!cashMachine.containsCard()){
-                insertCardMenu();
+                card = insertCardMenu();
             }
             else{
-                cardOperationsMenu();
+                cardOperationsMenu(card);
             }
         }
     }

@@ -1,23 +1,19 @@
 package com.company.entity;
 
-import java.math.BigDecimal;
+import com.company.entity.Cards.Card;
+
 import java.util.*;
 
 public class Bank {
-    private Map<Card, BigDecimal> cardsInformation;
-    private static Bank bank;
+    private List<Card> registeredCards;
 
-    private Bank(){
-        cardsInformation = new HashMap<>();
-    }
-
-    public static Bank getInstance(){
-        if(bank == null) bank = new Bank();
-        return bank;
+    public Bank(){
+        registeredCards = new ArrayList<>();
     }
 
     public Boolean cardIsRegistered(String number){
-        Optional<Card> card = new ArrayList<>(cardsInformation.keySet())
+        Optional<Card> card =
+                registeredCards
                 .stream()
                 .filter(c -> c.getNumber().equals(number))
                 .findFirst();
@@ -26,7 +22,8 @@ public class Bank {
     }
 
     public Card getCard(String number) {
-        Optional<Card> card = new ArrayList<>(cardsInformation.keySet())
+        Optional<Card> card =
+                registeredCards
                 .stream()
                 .filter(c -> c.getNumber().equals(number))
                 .findFirst();
@@ -35,34 +32,17 @@ public class Bank {
         else throw new NullPointerException("Карта не найдена");
     }
 
-    public BigDecimal getCardBalance(Card card){
-        return cardsInformation.get(card);
-    }
-
     public Boolean addCard(Card card){
-        if(cardsInformation.containsKey(card)) return false;
-        cardsInformation.put(card, new BigDecimal(0));
+        if(registeredCards.contains(card)) return false;
+        registeredCards.add(card);
         return true;
     }
 
-    public Boolean writeOffFunds(Card card, BigDecimal count){
-        BigDecimal cardBalance = cardsInformation.get(card);
-
-        if(cardBalance.compareTo(count) < 0) return false;
-        cardsInformation.put(card, cardBalance.subtract(count));
-        return true;
+    public List<Card> getRegisteredCards() {
+        return registeredCards;
     }
 
-    public void accrueFunds(Card card, BigDecimal count){
-        BigDecimal cardBalance = cardsInformation.get(card);
-        cardsInformation.put(card, cardBalance.add(count));
-    }
-
-    public Map<Card, BigDecimal> getCardsInformation() {
-        return cardsInformation;
-    }
-
-    public void setCardsInformation(Map<Card, BigDecimal> cardsInformation) {
-        this.cardsInformation = cardsInformation;
+    public void setRegisteredCards(List<Card> registeredCards) {
+        this.registeredCards = registeredCards;
     }
 }
