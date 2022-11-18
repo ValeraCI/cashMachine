@@ -1,9 +1,9 @@
 package com.company.utils;
 
 import com.company.entity.Bank;
-import com.company.entity.Cards.Card;
+import com.company.entity.Card;
 import com.company.entity.CashMachine;
-import com.company.services.FileService;
+import com.company.service.FileService;
 
 import java.math.BigDecimal;
 

@@ -1,7 +1,6 @@
-package com.company.entity.Cards;
+package com.company.entity;
 
 import com.company.utils.CardType;
-
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Objects;

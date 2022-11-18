@@ -1,10 +1,9 @@
-package com.company.repositories;
+package com.company.repository;
 
-import com.company.entity.Cards.Card;
+import com.company.entity.Card;
 import com.company.utils.CardFactory;
 import com.company.utils.CardType;
 import com.company.utils.FileOperations;
-
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;

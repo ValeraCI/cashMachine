@@ -1,7 +1,6 @@
 package com.company.entity;
 
-import com.company.services.FileService;
-
+import com.company.service.FileService;
 import java.math.BigDecimal;
 
 public class CashMachine {

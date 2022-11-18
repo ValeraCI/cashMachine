@@ -1,9 +1,9 @@
 package com.company.utils;
 
-import com.company.entity.Cards.BronzeCard;
-import com.company.entity.Cards.Card;
-import com.company.entity.Cards.GoldenCard;
-import com.company.entity.Cards.SilveredCard;
+import com.company.entity.BronzeCard;
+import com.company.entity.Card;
+import com.company.entity.GoldenCard;
+import com.company.entity.SilveredCard;
 
 public class CardFactory {
     private CardFactory(){}

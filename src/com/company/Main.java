@@ -1,6 +1,5 @@
 package com.company;
 
-
 import com.company.utils.CashMachineMenu;
 
 public class Main {

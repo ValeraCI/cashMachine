@@ -1,8 +1,7 @@
-package com.company.services;
+package com.company.service;
 
-import com.company.repositories.FileRepository;
-import com.company.entity.Cards.Card;
-
+import com.company.repository.FileRepository;
+import com.company.entity.Card;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;

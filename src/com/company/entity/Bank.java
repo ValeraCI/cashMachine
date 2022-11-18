@@ -1,7 +1,5 @@
 package com.company.entity;
 
-import com.company.entity.Cards.Card;
-
 import java.util.*;
 
 public class Bank {
