@@ -4,7 +4,6 @@ import com.company.entity.Bank;
 import com.company.entity.Card;
 import com.company.entity.CashMachine;
 import com.company.service.FileService;
-
 import java.math.BigDecimal;
 
 public class CashMachineMenu {

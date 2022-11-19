@@ -2,7 +2,6 @@ package com.company.entity;
 
 import com.company.utils.CardType;
 import com.company.utils.Rounding;
-
 import java.math.BigDecimal;
 
 public class SilveredCard extends Card {
