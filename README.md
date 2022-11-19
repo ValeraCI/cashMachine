@@ -1,5 +1,5 @@
 # Cash Machine
-This project is a technical task for getting into Java intensive from SENLA.
+This project is a technical task for getting into Java intensive organized by SENLA.
 ___
 ##### Требования к коду:
 - приложение должно быть реализовано на языке Java версии 7+; -- Done
