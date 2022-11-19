@@ -26,7 +26,7 @@ public class CashMachineMenu {
             System.out.print("Попытка " + i + "/3: ");
             String password = Input.inPassword();
             if (card.checkPassword(password)) {
-                System.out.println("Пароль верен");
+                System.out.println("Пароль верен\n");
                 return true;
             }
             System.out.println("Пароль неверен");
@@ -83,7 +83,7 @@ public class CashMachineMenu {
     private static void removeFromCard(Card card) {
         System.out.print("Сумма снятия: ");
         BigDecimal count = Input.inAmountOfFunds();
-        if(cashMachine.getAmountOfFunds().compareTo(card.subtractPercentage(count)) < 0) {
+        if(cashMachine.getAmountOfFunds().compareTo(card.fundsForIssuance(count)) < 0) {
             System.out.println("В банкомате недостаточно средств");
         } else if (!card.possibleWriteOffFunds(count)) {
             System.out.println("На счету недостаточно средств");

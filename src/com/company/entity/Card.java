@@ -3,7 +3,6 @@ package com.company.entity;
 import com.company.utils.CardType;
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.Objects;
 
 public abstract class Card{
     private final String number;
@@ -60,28 +59,14 @@ public abstract class Card{
 
     public abstract BigDecimal writeOffFunds(BigDecimal count);
 
-    public abstract BigDecimal subtractPercentage(BigDecimal count);
+    public abstract BigDecimal fundsForIssuance(BigDecimal count);
 
     public Boolean possibleWriteOffFunds(BigDecimal count){
-        if(funds.compareTo(count) >= 0) return true;
-        return false;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Card card)) return false;
-        return number.equals(card.number);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(number);
+        return funds.compareTo(count) >= 0;
     }
 
     @Override
     public String toString() {
-        String str = number + " " + password + " " + blockingTime + " " + funds + " " + cardType;
-        return str;
+        return number + " " + password + " " + blockingTime + " " + funds + " " + cardType;
     }
 }

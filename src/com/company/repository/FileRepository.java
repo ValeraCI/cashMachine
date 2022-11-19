@@ -4,6 +4,8 @@ import com.company.entity.Card;
 import com.company.utils.CardFactory;
 import com.company.utils.CardType;
 import com.company.utils.FileOperations;
+import com.company.utils.Rounding;
+
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -46,11 +48,13 @@ public class FileRepository {
             if (!line.matches("^\\d{4}-\\d{4}-\\d{4}-\\d{4} \\w+ -?\\d+ \\d+(.\\d+)? (BRONZE|GOLDEN|SILVERED)"))
                 continue;
 
-            String[] elementOfLine = line.split(" ");
-            Card card = CardFactory.create(elementOfLine[0], elementOfLine[1], CardType.valueOf(elementOfLine[4]));
-            card.setBlockingTime(Long.parseLong(elementOfLine[2]));
-            card.setFunds(new BigDecimal(elementOfLine[3]));
-            cards.add(card);
+            try {
+                String[] elementOfLine = line.split(" ");
+                Card card = CardFactory.create(elementOfLine[0], elementOfLine[1], CardType.valueOf(elementOfLine[4]));
+                card.setBlockingTime(Long.parseLong(elementOfLine[2]));
+                card.setFunds(Rounding.bigDecimalToHundredths(new BigDecimal(elementOfLine[3])));
+                cards.add(card);
+            }catch (Exception e){}
         }
         return cards;
     }

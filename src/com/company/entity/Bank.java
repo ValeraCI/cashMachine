@@ -1,5 +1,7 @@
 package com.company.entity;
 
+import com.company.service.FileService;
+
 import java.util.*;
 
 public class Bank {

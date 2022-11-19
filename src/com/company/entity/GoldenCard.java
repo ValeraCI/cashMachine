@@ -23,7 +23,7 @@ public class GoldenCard extends Card {
     }
 
     @Override
-    public BigDecimal subtractPercentage(BigDecimal count) {
+    public BigDecimal fundsForIssuance(BigDecimal count) {
         return count;
     }
 }

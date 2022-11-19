@@ -1,6 +1,8 @@
 package com.company.entity;
 
 import com.company.utils.CardType;
+import com.company.utils.Rounding;
+
 import java.math.BigDecimal;
 
 public class SilveredCard extends Card {
@@ -11,8 +13,7 @@ public class SilveredCard extends Card {
 
     @Override
     public void depositFunds(BigDecimal count) {
-        count = count.subtract(count.multiply(BigDecimal.valueOf(0.03)));
-
+        count = Rounding.bigDecimalToHundredths(count.subtract(count.multiply(BigDecimal.valueOf(0.03))));
         this.setFunds(this.getFunds().add(count));
     }
 
@@ -21,11 +22,11 @@ public class SilveredCard extends Card {
         if(this.getFunds().compareTo(count) < 0) throw new RuntimeException("На карте недостаточно средств");
 
         this.setFunds(this.getFunds().subtract(count));
-        return count.subtract(count.multiply(BigDecimal.valueOf(0.03)));
+        return Rounding.bigDecimalToHundredths(count.subtract(count.multiply(BigDecimal.valueOf(0.03))));
     }
 
     @Override
-    public BigDecimal subtractPercentage(BigDecimal count) {
-        return count.subtract(count.multiply(BigDecimal.valueOf(0.03)));
+    public BigDecimal fundsForIssuance(BigDecimal count) {
+        return Rounding.bigDecimalToHundredths(count.subtract(count.multiply(BigDecimal.valueOf(0.03))));
     }
 }
